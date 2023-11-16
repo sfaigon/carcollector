@@ -12,6 +12,10 @@
         <p>Model: {{ car.model }}</p>
         <p>Description: {{ car.description| linebreaks}}</p>                    
     </div>
+    <div class="card-action">
+        <a href="{% url 'cars_update' car.id %}">Edit</a>
+        <a href="{% url 'cars_delete' car.id %}">Delete</a>
+      </div>
 </div>
 
 {% endblock %}
