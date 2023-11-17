@@ -15,7 +15,7 @@ class Accessory(models.Model):
     def __str__(self):
         return self.name
     def get_absolute_url(self):
-        return reverse('accessories_details', kwargs={'pk': self.id})
+        return reverse('accessories_detail', kwargs={'pk': self.id})
 
 class Car(models.Model):
     name = models.CharField(max_length=100)
