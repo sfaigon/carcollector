@@ -15,7 +15,41 @@
     <div class="card-action">
         <a href="{% url 'cars_update' car.id %}">Edit</a>
         <a href="{% url 'cars_delete' car.id %}">Delete</a>
+    </div>
+
+    <div class="col s6">
+      <form action="{% url 'add_oilchange' car.id %}" method="POST">
+        {% csrf_token %}
+        <!-- Render the inputs -->
+        {{ oilchange_form.as_p }}
+        <input type="submit" class="btn" value="Add Oil Change">
+      </form>
+    
+        <table class="striped">
+          <thead>
+            <tr><th>Date</th><th>Oil</th></tr>
+          </thead>
+          <tbody>
+            {% for oilchange in car.oilchange_set.all %}
+              <tr>
+                <td>{{oilchange.date}}</td>
+                <td>{{oilchange.get_oil_display}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
 </div>
-
+<script>
+  const dateEl = document.getElementById('id_date');
+  // M is Materialize's global variable
+  M.Datepicker.init(dateEl, {
+    format: 'yyyy-mm-dd',
+    defaultDate: new Date(),
+    setDefaultDate: true,
+    autoClose: true
+  });
+  const selectEl = document.getElementById('id_oil');
+  M.FormSelect.init(selectEl);
+</script>
 {% endblock %}
