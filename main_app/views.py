@@ -16,14 +16,17 @@ def cars_index(request):
     })
 def cars_details(request, car_id):
     car = Car.objects.get(id=car_id)
+    id_list = car.accessories.all().values_list('id')
+    accessories_car_doesnt_have = Accessory.objects.exclude(id__in=id_list)
     oilchange_form = OilChangeForm()
     return render(request, 'cars/detail.html', {
         'car': car,
-        "oilchange_form": oilchange_form
+        "oilchange_form": oilchange_form,
+        "accessories": accessories_car_doesnt_have
     })
 class CarCreate(CreateView):
     model = Car 
-    fields = "__all__"
+    fields = ["name","make", "model", "year", "color", "description"]
     success_url = "/cars"
 class CarUpdate(UpdateView):
     model = Car
@@ -43,7 +46,6 @@ class AccessoryList(ListView):
 
 class AccessoryDetail(DetailView):
   model = Accessory
-
 class AccessoryCreate(CreateView):
   model = Accessory
   fields = '__all__'
@@ -55,6 +57,11 @@ class AccessoryUpdate(UpdateView):
 class AccessoryDelete(DeleteView):
   model = Accessory
   success_url = '/accessories'
-def assoc_accessory(request, cat_id, accessory_id):
-  Car.objects.get(id=cat_id).accessories.add(accessory_id)
-  return redirect("detail", cat_id=cat_id)
+
+def assoc_accessory(request, car_id, accessory_id):
+  Car.objects.get(id=car_id).accessories.add(accessory_id)
+  return redirect("detail", car_id=car_id)
+
+def unassoc_accessory(request, car_id, accessory_id):
+  Car.objects.get(id=car_id).accessories.remove(accessory_id)
+  return redirect("detail", car_id=car_id)
