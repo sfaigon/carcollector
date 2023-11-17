@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Car
+from django.views.generic import ListView, DetailView
+from .models import Car, Accessory
 from .forms import OilChangeForm
 
 # Create your views here.
@@ -37,3 +38,23 @@ def add_oilchange(request, car_id):
     new_oilchange.car_id = car_id
     new_oilchange.save()
   return redirect('detail', car_id=car_id)
+class AccessoryList(ListView):
+  model = Accessory
+
+class AccessoryDetail(DetailView):
+  model = Accessory
+
+class AccessoryCreate(CreateView):
+  model = Accessory
+  fields = '__all__'
+
+class AccessoryUpdate(UpdateView):
+  model = Accessory
+  fields = ['name', 'color', 'description']
+
+class AccessoryDelete(DeleteView):
+  model = Accessory
+  success_url = '/accessories'
+def assoc_accessory(request, cat_id, accessory_id):
+  Car.objects.get(id=cat_id).accessories.add(accessory_id)
+  return redirect("detail", cat_id=cat_id)
